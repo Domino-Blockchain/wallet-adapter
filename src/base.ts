@@ -23,26 +23,26 @@ import {
 import type { Transaction } from '@solana/web3.js';
 import { PublicKey } from '@solana/web3.js';
 
-interface SolletWallet {
+interface DWalletWallet {
     postMessage?(...args: unknown[]): unknown;
 }
 
-interface SolletWindow extends Window {
-    sollet?: SolletWallet;
+interface DWalletWindow extends Window {
+    dwallet?: DWalletWallet;
 }
 
-declare const window: SolletWindow;
+declare const window: DWalletWindow;
 
-export interface SolletWalletAdapterConfig {
-    provider?: string | SolletWallet;
+export interface DWalletWalletAdapterConfig {
+    provider?: string | DWalletWallet;
     network?: WalletAdapterNetwork;
     timeout?: number;
 }
 
-export abstract class BaseSolletWalletAdapter extends BaseMessageSignerWalletAdapter {
+export abstract class BaseDWalletWalletAdapter extends BaseMessageSignerWalletAdapter {
     readonly supportedTransactionVersions = null;
 
-    protected _provider: string | SolletWallet | undefined;
+    protected _provider: string | DWalletWallet | undefined;
     protected _network: WalletAdapterNetwork;
     protected _timeout: number;
     protected _connecting: boolean;
@@ -53,7 +53,7 @@ export abstract class BaseSolletWalletAdapter extends BaseMessageSignerWalletAda
             ? WalletReadyState.Unsupported
             : WalletReadyState.NotDetected;
 
-    constructor({ provider, network = WalletAdapterNetwork.Mainnet, timeout = 10000 }: SolletWalletAdapterConfig = {}) {
+    constructor({ provider, network = WalletAdapterNetwork.Mainnet, timeout = 10000 }: DWalletWalletAdapterConfig = {}) {
         super();
 
         this._provider = provider;
@@ -72,7 +72,7 @@ export abstract class BaseSolletWalletAdapter extends BaseMessageSignerWalletAda
             } else {
                 console.log(1)
                 scopePollingDetectionStrategy(() => {
-                    if (typeof window.sollet?.postMessage === 'function') {
+                    if (typeof window.dwallet?.postMessage === 'function') {
                         console.log(2)
                         this._readyState = WalletReadyState.Installed;
                         console.log(2)
@@ -112,7 +112,7 @@ export abstract class BaseSolletWalletAdapter extends BaseMessageSignerWalletAda
             this._connecting = true;
 
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const provider = this._provider || window.sollet!;
+            const provider = this._provider || window.dwallet!;
 
             let SolWalletAdapterClass: typeof SolWalletAdapter;
             try {
